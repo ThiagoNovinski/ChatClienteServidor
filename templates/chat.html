@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sala Global</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+<body>
+    <div class="card-container">
+        <div class="chat-header">
+            <h2 id="roomTitle">Sala Global</h2>
+        </div>
+        <ul id="messages" class="messages-list"></ul>
+        <div class="input-area">
+            <input type="text" id="myMessage" placeholder="Digite sua mensagem..." autocomplete="off">
+            <button id="sendBtn">Enviar</button>
+        </div>
+    </div>
+
+    <script>
+        // 1. Recupera os dados salvos pelo login.html
+        const myName = sessionStorage.getItem('chat_username');
+        const myColor = sessionStorage.getItem('chat_color');
+
+        // 2. Proteção: Se não tem nome, expulsa de volta pro Login
+        if (!myName) {
+            window.location.href = "/";
+        }
+
+        // 3. Atualiza o título para o usuário ver que está logado
+        document.getElementById('roomTitle').textContent = `Conectado como: ${myName}`;
+
+        // 4. Inicia o Chat
+        const socket = io();
+        const inputArea = document.getElementById('myMessage');
+        const sendBtn = document.getElementById('sendBtn');
+        const messagesList = document.getElementById('messages');
+
+        // Recebe as mensagens
+        socket.on('message', function(data) {
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="user-name" style="color: ${data.color};">${data.user}:</span> <span class="user-msg">${data.text}</span>`;
+            messagesList.appendChild(li);
+            messagesList.scrollTop = messagesList.scrollHeight;
+        });
+
+        // Envia as mensagens usando os dados do sessionStorage
+        function sendMessage() {
+            const msgText = inputArea.value.trim();
+            if (msgText !== "") {
+                const messageData = {
+                    user: myName,
+                    color: myColor,
+                    text: msgText
+                };
+                socket.send(messageData);
+                inputArea.value = '';
+            }
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        inputArea.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Foca no input logo ao carregar a página
+        inputArea.focus();
+    </script>
+</body>
+</html>

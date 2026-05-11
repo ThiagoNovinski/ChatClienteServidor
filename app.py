@@ -1,26 +1,31 @@
+from gevent import monkey
+monkey.patch_all()
+
 from flask import Flask, render_template
 from flask_socketio import SocketIO, send
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'uma_chave_secreta_qualquer'
-# Inicializa o SocketIO. Em dev, ele usa o modelo de threads do Werkzeug.
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
-@app.route('/')
-def index():
-    return render_template('index.html')
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='gevent')
 
-# Evento acionado quando um cliente se conecta
+# Rota principal agora renderiza apenas a tela de Login
+@app.route('/')
+def login():
+    return render_template('login.html')
+
+# Nova rota para a tela do Chat
+@app.route('/chat')
+def chat():
+    return render_template('chat.html')
+
 @socketio.on('connect')
 def handle_connect():
     print("Novo cliente conectado.")
 
-# Evento acionado quando o servidor recebe uma mensagem
 @socketio.on('message')
-def handle_message(msg):
-    print(f"Mensagem recebida: {msg}")
-    # Envia a mensagem para todos os clientes conectados
-    send(msg, broadcast=True)
+def handle_message(data):
+    print(f"Mensagem recebida: {data}")
+    send(data, broadcast=True)
 
 if __name__ == '__main__':
-    # debug=True inicia o servidor de desenvolvimento multithread do Flask
-    socketio.run(app, debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True, use_reloader=False)

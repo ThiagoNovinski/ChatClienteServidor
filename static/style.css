@@ -1,3 +1,4 @@
+/* static/style.css */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,76 +7,146 @@
 }
 
 body {
-    background-color: #1e1e2e;
+    background-color: #1e1e2f;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
 
-.chat-container {
-    background-color: #282a36;
+/* Container Principal */
+.card-container {
     width: 400px;
     height: 600px;
-    border-radius: 10px;
+    background-color: #2b2b40;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     display: flex;
     flex-direction: column;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
     overflow: hidden;
 }
 
+/* Cabeçalho */
 .chat-header {
-    background-color: #44475a;
-    color: #f8f8f2;
+    background-color: #3b3b58;
     padding: 15px;
+    text-align: center;
+    color: #fff;
+    border-bottom: 1px solid #1e1e2f;
+    flex-shrink: 0; /* Garante que o cabeçalho não seja esmagado */
+}
+
+/* Tela de Login */
+.login-body {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+    color: #e0e0e0;
     text-align: center;
 }
 
-.chat-messages {
-    flex: 1;
-    padding: 15px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.login-body p {
+    margin-bottom: 20px;
 }
 
-.message {
-    background-color: #6272a4;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 15px;
-    max-width: 80%;
-    align-self: flex-start;
-    word-wrap: break-word;
-}
-
-.chat-input {
-    display: flex;
-    padding: 15px;
-    background-color: #44475a;
-}
-
-.chat-input input {
-    flex: 1;
-    padding: 10px;
+.login-body input {
+    padding: 12px;
+    margin-bottom: 15px;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
+    background-color: #1e1e2f;
+    color: #fff;
+    font-size: 16px;
     outline: none;
-    background-color: #f8f8f2;
 }
 
-.chat-input button {
-    margin-left: 10px;
-    padding: 10px 15px;
-    background-color: #50fa7b;
-    color: #282a36;
+.login-body button {
+    padding: 12px;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
+    background-color: #5c5cff;
+    color: white;
     cursor: pointer;
     font-weight: bold;
+    font-size: 16px;
+    transition: background-color 0.2s;
 }
 
-.chat-input button:hover {
-    background-color: #40c563;
+.login-body button:hover {
+    background-color: #4a4ae6;
+}
+
+/* Lista de Mensagens */
+.messages-list {
+    list-style-type: none;
+    padding: 15px;
+    flex-grow: 1; /* Ocupa todo o espaço do meio */
+    overflow-y: auto; /* Cria a barra de rolagem quando encher */
+    color: #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Espaçamento entre os balões */
+}
+
+/* Scrollbar customizada (opcional, deixa mais elegante no dark mode) */
+.messages-list::-webkit-scrollbar {
+    width: 6px;
+}
+.messages-list::-webkit-scrollbar-thumb {
+    background-color: #5c5cff;
+    border-radius: 10px;
+}
+
+/* Balão de Mensagem */
+.messages-list li {
+    background-color: #444466;
+    padding: 10px 15px;
+    border-radius: 8px;
+    word-wrap: break-word;
+    line-height: 1.4;
+}
+
+.user-name {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+/* Área de Input Fixa e Modernizada */
+.input-area {
+    display: flex;
+    padding: 15px;
+    background-color: #3b3b58;
+    border-top: 1px solid #1e1e2f;
+    flex-shrink: 0; /* IMPEDE que a área de input seja empurrada para fora */
+    align-items: center;
+}
+
+.input-area input {
+    flex-grow: 1;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 20px; /* Bordas mais redondinhas */
+    outline: none;
+    background-color: #1e1e2f;
+    color: #fff;
+    font-size: 15px;
+}
+
+.input-area button {
+    margin-left: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px; /* Acompanha o input */
+    background-color: #5c5cff;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease; /* Transição mais suave */
+}
+
+.input-area button:hover {
+    background-color: #4a4ae6;
+    transform: scale(1.05); /* Dá um leve zoom ao passar o mouse */
 }
