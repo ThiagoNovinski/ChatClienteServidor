@@ -1,152 +1,195 @@
-/* static/style.css */
+/* style.css */
+
+/* --- RESET BÁSICO --- */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 body {
-    background-color: #1e1e2f;
+    /* Fundo escuro elegante */
+    background-color: #11111a; 
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    color: #e4e4e7;
 }
 
-/* Container Principal */
+/* --- CONTAINER PRINCIPAL (Usado no Login e no Chat) --- */
 .card-container {
-    width: 400px;
-    height: 600px;
-    background-color: #2b2b40;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    width: 100%;
+    max-width: 600px; /* Um pouco mais largo para acomodar os textos das threads */
+    height: 80vh;
+    max-height: 700px;
+    background-color: #1f1f2e;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    border: 1px solid #2a2a3f;
 }
 
-/* Cabeçalho */
+/* --- CABEÇALHO --- */
 .chat-header {
-    background-color: #3b3b58;
-    padding: 15px;
+    background-color: #26263a;
+    padding: 20px;
     text-align: center;
-    color: #fff;
-    border-bottom: 1px solid #1e1e2f;
-    flex-shrink: 0; /* Garante que o cabeçalho não seja esmagado */
+    border-bottom: 2px solid #32324e;
+    flex-shrink: 0;
 }
 
-/* Tela de Login */
+.chat-header h2 {
+    font-size: 22px;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+}
+
+/* --- TELA DE LOGIN --- */
 .login-body {
-    padding: 30px;
+    padding: 40px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     flex-grow: 1;
-    color: #e0e0e0;
     text-align: center;
 }
 
 .login-body p {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    color: #a1a1aa;
+    font-size: 16px;
 }
 
 .login-body input {
-    padding: 12px;
-    margin-bottom: 15px;
-    border: none;
-    border-radius: 4px;
-    background-color: #1e1e2f;
-    color: #fff;
+    width: 80%;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 2px solid #32324e;
+    border-radius: 8px;
+    background-color: #11111a;
+    color: #ffffff;
     font-size: 16px;
     outline: none;
+    transition: border-color 0.3s;
+}
+
+.login-body input:focus {
+    border-color: #6366f1; /* Brilho azul ao focar */
 }
 
 .login-body button {
-    padding: 12px;
+    width: 80%;
+    padding: 15px;
     border: none;
-    border-radius: 4px;
-    background-color: #5c5cff;
+    border-radius: 8px;
+    background-color: #6366f1;
     color: white;
     cursor: pointer;
     font-weight: bold;
     font-size: 16px;
-    transition: background-color 0.2s;
+    letter-spacing: 1px;
+    transition: background-color 0.2s, transform 0.1s;
 }
 
 .login-body button:hover {
-    background-color: #4a4ae6;
+    background-color: #4f46e5;
 }
 
-/* Lista de Mensagens */
+.login-body button:active {
+    transform: scale(0.98);
+}
+
+/* --- TELA DE CHAT: LISTA DE MENSAGENS --- */
 .messages-list {
     list-style-type: none;
-    padding: 15px;
-    flex-grow: 1; /* Ocupa todo o espaço do meio */
-    overflow-y: auto; /* Cria a barra de rolagem quando encher */
-    color: #e0e0e0;
+    padding: 20px;
+    flex-grow: 1;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Espaçamento entre os balões */
+    gap: 12px;
 }
 
-/* Scrollbar customizada (opcional, deixa mais elegante no dark mode) */
+/* Scrollbar Customizada para combinar com o tema escuro */
 .messages-list::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
+}
+.messages-list::-webkit-scrollbar-track {
+    background: #1f1f2e;
 }
 .messages-list::-webkit-scrollbar-thumb {
-    background-color: #5c5cff;
+    background-color: #3f3f5a;
     border-radius: 10px;
 }
 
-/* Balão de Mensagem */
+/* Balões de Mensagem */
 .messages-list li {
-    background-color: #444466;
-    padding: 10px 15px;
-    border-radius: 8px;
+    background-color: #2a2a3f;
+    padding: 12px 18px;
+    border-radius: 10px;
+    border-top-left-radius: 2px; /* Dá um aspecto de "balão de fala" */
     word-wrap: break-word;
-    line-height: 1.4;
+    font-size: 15px;
+    line-height: 1.5;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    align-self: flex-start;
+    max-width: 90%;
 }
 
 .user-name {
-    font-weight: bold;
-    margin-right: 5px;
+    font-weight: 700;
+    margin-right: 8px;
+    font-size: 14px;
 }
 
-/* Área de Input Fixa e Modernizada */
+.user-msg {
+    color: #e4e4e7;
+}
+
+/* --- TELA DE CHAT: ÁREA DE INPUT --- */
 .input-area {
     display: flex;
-    padding: 15px;
-    background-color: #3b3b58;
-    border-top: 1px solid #1e1e2f;
-    flex-shrink: 0; /* IMPEDE que a área de input seja empurrada para fora */
+    padding: 15px 20px;
+    background-color: #26263a;
+    border-top: 1px solid #32324e;
+    flex-shrink: 0;
     align-items: center;
 }
 
 .input-area input {
     flex-grow: 1;
-    padding: 12px 15px;
+    padding: 14px 20px;
     border: none;
-    border-radius: 20px; /* Bordas mais redondinhas */
+    border-radius: 25px;
     outline: none;
-    background-color: #1e1e2f;
-    color: #fff;
+    background-color: #11111a;
+    color: #ffffff;
     font-size: 15px;
 }
 
 .input-area button {
-    margin-left: 10px;
-    padding: 10px 20px;
+    margin-left: 12px;
+    padding: 12px 20px;
     border: none;
-    border-radius: 20px; /* Acompanha o input */
-    background-color: #5c5cff;
+    border-radius: 25px;
+    background-color: #6366f1;
     color: white;
     cursor: pointer;
     font-weight: bold;
-    transition: all 0.2s ease; /* Transição mais suave */
+    transition: all 0.2s ease;
 }
 
 .input-area button:hover {
-    background-color: #4a4ae6;
-    transform: scale(1.05); /* Dá um leve zoom ao passar o mouse */
+    background-color: #4f46e5;
+}
+
+/* Como você usou style inline no HTML para o botão de Crash, 
+ele vai herdar o formato bonitinho daqui, mas manterá a cor vermelha do seu HTML! */
+#crashBtn:hover {
+    filter: brightness(0.85); /* Efeito de hover no botão vermelho */
 }

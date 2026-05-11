@@ -2,70 +2,112 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sala Global</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div class="card-container">
         <div class="chat-header">
-            <h2 id="roomTitle">Sala Global</h2>
+            <div id="headerContent">
+                <h2>Conectando...</h2>
+            </div>
         </div>
         <ul id="messages" class="messages-list"></ul>
+        
         <div class="input-area">
             <input type="text" id="myMessage" placeholder="Digite sua mensagem..." autocomplete="off">
             <button id="sendBtn">Enviar</button>
+            <button id="crashBtn" style="background-color: #ff3333; margin-left: 10px;">Derrubar</button>
         </div>
     </div>
 
     <script>
-        // 1. Recupera os dados salvos pelo login.html
         const myName = sessionStorage.getItem('chat_username');
         const myColor = sessionStorage.getItem('chat_color');
 
-        // 2. Proteção: Se não tem nome, expulsa de volta pro Login
-        if (!myName) {
-            window.location.href = "/";
+        if (!myName) window.location.href = "login.html";
+
+        let socket;
+        let tentativaReconexao;
+        
+        const inputArea = document.getElementById('myMessage');
+        const messagesList = document.getElementById('messages');
+        const headerContent = document.getElementById('headerContent');
+        const sendBtn = document.getElementById('sendBtn');
+        const crashBtn = document.getElementById('crashBtn');
+
+        // Função que gerencia a thread de conexão do cliente
+        function conectarServidor() {
+            socket = new WebSocket('ws://localhost:9001');
+
+            socket.onopen = function() {
+                clearInterval(tentativaReconexao);
+                sendBtn.disabled = false;
+                crashBtn.disabled = false;
+
+                // NOVIDADE: Assim que conectar, o navegador "se apresenta" pro servidor
+                socket.send(JSON.stringify({ tipo: "join", user: myName }));
+            };
+
+            socket.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+
+                if (data.tipo === "sistema") {
+                    headerContent.innerHTML = `
+                        <h2 style="margin-bottom: 5px;">User: ${myName}</h2>
+                        <p style="font-size: 14px; color: #a0a0b0;">
+                            <b>Thread do Servidor:</b> ${data.tid_servidor} | <b>Sua Thread:</b> ${data.tid_cliente}
+                        </p>
+                    `;
+                } 
+                else if (data.tipo === "chat") {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span class="user-name" style="color: ${data.color};">${data.user}:</span> <span class="user-msg">${data.text}</span>`;
+                    messagesList.appendChild(li);
+                    messagesList.scrollTop = messagesList.scrollHeight;
+
+                    // NOVIDADE: Se a mensagem contiver a ordem de desconexão, o JS quebra a conexão!
+                    if (data.comando === "forcar_desconexao") {
+                        socket.close(); // Isso aciona o socket.onclose() imediatamente!
+                    }
+                }
+            };
+
+            socket.onclose = function() {
+                // A rede caiu! A Thread do cliente detecta a falha
+                headerContent.innerHTML = `<h2 style="color: #ff3333;">Conexão Perdida. Reconectando...</h2>`;
+                sendBtn.disabled = true;
+                crashBtn.disabled = true;
+
+                // Cria uma "thread" em background no JS para tentar reconectar a cada 3 segundos
+                clearInterval(tentativaReconexao);
+                tentativaReconexao = setInterval(conectarServidor, 3000);
+            };
         }
 
-        // 3. Atualiza o título para o usuário ver que está logado
-        document.getElementById('roomTitle').textContent = `Conectado como: ${myName}`;
+        // Inicia a conexão na primeira vez
+        conectarServidor();
 
-        // 4. Inicia o Chat
-        const socket = io();
-        const inputArea = document.getElementById('myMessage');
-        const sendBtn = document.getElementById('sendBtn');
-        const messagesList = document.getElementById('messages');
+        // ---- EVENTOS DE BOTÃO ----
 
-        // Recebe as mensagens
-        socket.on('message', function(data) {
-            const li = document.createElement('li');
-            li.innerHTML = `<span class="user-name" style="color: ${data.color};">${data.user}:</span> <span class="user-msg">${data.text}</span>`;
-            messagesList.appendChild(li);
-            messagesList.scrollTop = messagesList.scrollHeight;
-        });
-
-        // Envia as mensagens usando os dados do sessionStorage
         function sendMessage() {
             const msgText = inputArea.value.trim();
-            if (msgText !== "") {
-                const messageData = {
-                    user: myName,
-                    color: myColor,
-                    text: msgText
-                };
-                socket.send(messageData);
+            if (msgText !== "" && socket.readyState === WebSocket.OPEN) {
+                socket.send(JSON.stringify({ user: myName, color: myColor, text: msgText }));
                 inputArea.value = '';
             }
         }
 
         sendBtn.addEventListener('click', sendMessage);
-        inputArea.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') sendMessage();
+        inputArea.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
+
+        // O Botão do Caos
+        crashBtn.addEventListener('click', function() {
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(JSON.stringify({ tipo: "crash" }));
+            }
         });
 
-        // Foca no input logo ao carregar a página
         inputArea.focus();
     </script>
 </body>

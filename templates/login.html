@@ -2,15 +2,12 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Entrar no Chat</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div class="card-container">
-        <div class="chat-header">
-            <h2>Bem-vindo ao Chat</h2>
-        </div>
+        <div class="chat-header"><h2>Bem-vindo ao Chat</h2></div>
         <div class="login-body">
             <p>Por favor, identifique-se para entrar na sala.</p>
             <input type="text" id="usernameInput" placeholder="Seu nome..." autocomplete="off">
@@ -19,29 +16,18 @@
     </div>
 
     <script>
-        const usernameInput = document.getElementById('usernameInput');
-        const joinBtn = document.getElementById('joinBtn');
-
         function joinChat() {
-            const name = usernameInput.value.trim();
+            const name = document.getElementById('usernameInput').value.trim();
             if (name !== "") {
-                // Gera a cor aleatória
                 const randomHue = Math.floor(Math.random() * 360);
                 const color = `hsl(${randomHue}, 80%, 70%)`;
-
-                // Salva os dados temporariamente no navegador do usuário
                 sessionStorage.setItem('chat_username', name);
                 sessionStorage.setItem('chat_color', color);
-
-                // Redireciona o usuário para a página do chat
-                window.location.href = "/chat";
+                window.location.href = "chat.html"; // Vai direto pro outro HTML
             }
         }
-
-        joinBtn.addEventListener('click', joinChat);
-        usernameInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') joinChat();
-        });
+        document.getElementById('joinBtn').addEventListener('click', joinChat);
+        document.getElementById('usernameInput').addEventListener('keypress', e => { if (e.key === 'Enter') joinChat(); });
     </script>
 </body>
 </html>
