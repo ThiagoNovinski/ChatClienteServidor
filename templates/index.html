@@ -23,7 +23,7 @@
                 const color = `hsl(${randomHue}, 80%, 70%)`;
                 sessionStorage.setItem('chat_username', name);
                 sessionStorage.setItem('chat_color', color);
-                window.location.href = "chat.html"; // Vai direto pro outro HTML
+                window.location.href = "/chat";
             }
         }
         document.getElementById('joinBtn').addEventListener('click', joinChat);
