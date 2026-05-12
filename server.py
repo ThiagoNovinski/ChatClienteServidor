@@ -109,7 +109,13 @@ def desligar_servidor():
 def rodar_servidor_http():
     class RotasFlaskCustomizadas(http.server.SimpleHTTPRequestHandler):
         def do_GET(self):
-            # Rotas à prova de balas (aceitam qualquer variação que o usuário digitar na URL)
+            # NOVIDADE: Finge que está tudo bem com o ícone, mas não envia nada.
+            # Isso impede o navegador de travar procurando o arquivo.
+            if self.path == '/favicon.ico':
+                self.send_response(204) # 204 = No Content (Sem conteúdo)
+                self.end_headers()
+                return
+
             if self.path in ['/', '/login', '/login.html']:
                 self.path = '/templates/login.html'
             elif self.path in ['/chat', '/chat.html']:
@@ -120,12 +126,14 @@ def rodar_servidor_http():
             except ConnectionAbortedError:
                 pass
 
-    RotasFlaskCustomizadas.log_message = lambda a, b, c, d, e: None 
+    # CORREÇÃO CRÍTICA: Agora o silenciador aceita qualquer quantidade de argumentos sem dar erro!
+    RotasFlaskCustomizadas.log_message = lambda *args, **kwargs: None 
     socketserver.TCPServer.allow_reuse_address = True
     
     with socketserver.TCPServer(("", 8000), RotasFlaskCustomizadas) as httpd:
         print("[*] Servidor HTTP embutido rodando na porta 8000...")
         httpd.serve_forever()
+
 
 def rodar_servidor_websocket():
     global servidor_atual, tid_atual
