@@ -6,14 +6,14 @@ import http.server
 import socketserver
 from websocket_server import WebsocketServer
 
-    # Variáveis globais para controle da réplica e dos usuários
+# Variáveis globais para controle da réplica e dos usuários
 servidor_atual = None
 tid_atual = None
 usuarios_conectados = {} # Dicionário para guardar qual ID pertence a qual Nome
 
-    # ==========================================
-    # 1. LÓGICA DO SERVIDOR DE CHAT (REPLICA)
-    # ==========================================
+# ==========================================
+# 1. LÓGICA DO SERVIDOR DE CHAT (REPLICA)
+# ==========================================
 
 def client_conectou(cliente, servidor):
     tid_cliente = threading.get_native_id()

@@ -41,7 +41,7 @@
 
         // Função que gerencia a thread de conexão do cliente
         function conectarServidor() {
-            socket = new WebSocket('https://chatclienteservidor.onrender.com');
+            socket = new WebSocket('wss://chatclienteservidor.onrender.com'); //essa porra é o link do deploy
 
             socket.onopen = function() {
                 clearInterval(tentativaReconexao);
