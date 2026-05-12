@@ -41,7 +41,7 @@
 
         // Função que gerencia a thread de conexão do cliente
         function conectarServidor() {
-            socket = new WebSocket('ws://localhost:9001');
+            socket = new WebSocket('wss://seu-backend.onrender.com');
 
             socket.onopen = function() {
                 clearInterval(tentativaReconexao);
@@ -117,7 +117,7 @@
             // Joga o usuário de volta para a tela de nome
             window.location.href = "/";
         });
-        
+
         sendBtn.addEventListener('click', sendMessage);
         inputArea.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
 

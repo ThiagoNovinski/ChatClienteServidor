@@ -140,7 +140,8 @@ def rodar_servidor_websocket():
     tid_atual = threading.get_native_id()
     print(f"\n[+] Iniciando nova réplica do WebSocket no TID: {tid_atual}")
 
-    servidor_atual = WebsocketServer(host='0.0.0.0', port=9001)
+    # Pega a porta que a nuvem mandar. Se não mandar, usa a 9001 (local)
+    porta_nuvem = int(os.environ.get("PORT", 9001))
     servidor_atual.set_fn_new_client(client_conectou)
     servidor_atual.set_fn_client_left(client_desconectou)
     servidor_atual.set_fn_message_received(mensagem_recebida)
