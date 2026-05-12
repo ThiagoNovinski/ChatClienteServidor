@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/templates/index.html" },
+    { "source": "/chat", "destination": "/templates/chat.html" }
+  ]
+}
