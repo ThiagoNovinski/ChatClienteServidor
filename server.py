@@ -13,6 +13,10 @@ usuarios_conectados = {}
 # 1. LÓGICA DO SERVIDOR DE CHAT (REPLICA)
 # ==========================================
 def client_conectou(cliente, servidor):
+    # PROTEÇÃO: Se não for um cliente real (ex: ping do Render), ignora e sai da função
+    if cliente is None:
+        return
+        
     tid_cliente = threading.get_native_id()
     print(f"[Thread {tid_cliente}] Cliente {cliente['id']} conectado na Réplica TID {tid_atual}")
     
@@ -66,6 +70,10 @@ def mensagem_recebida(cliente, servidor, mensagem):
         print(f"Erro ao processar mensagem: {e}")
 
 def client_desconectou(cliente, servidor):
+    # PROTEÇÃO: Ignora as desconexões geradas pelos pings do Render
+    if cliente is None:
+        return
+        
     tid = threading.get_native_id()
     print(f"[Thread {tid}] Cliente {cliente['id']} desconectou.")
     
