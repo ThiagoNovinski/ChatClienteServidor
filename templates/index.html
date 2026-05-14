@@ -2,32 +2,91 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+
+    <!-- Título exibido na aba do navegador -->
     <title>Entrar no Chat</title>
+
+    <!-- Importa o arquivo de estilos -->
     <link rel="stylesheet" href="/static/style.css">
 </head>
+
 <body>
+
+    <!-- Card principal da tela de login -->
     <div class="card-container">
-        <div class="chat-header"><h2>Bem-vindo ao Chat</h2></div>
+
+        <!-- Cabeçalho -->
+        <div class="chat-header">
+            <h2>Bem-vindo ao Chat</h2>
+        </div>
+
+        <!-- Área central do login -->
         <div class="login-body">
+
+            <!-- Texto de instrução -->
             <p>Por favor, identifique-se para entrar na sala.</p>
-            <input type="text" id="usernameInput" placeholder="Seu nome..." autocomplete="off">
-            <button id="joinBtn">Entrar na Sala</button>
+
+            <!-- Campo onde o usuário digita o nome -->
+            <input 
+                type="text"
+                id="usernameInput"
+                placeholder="Seu nome..."
+                autocomplete="off"
+            >
+
+            <!-- Botão para entrar -->
+            <button id="joinBtn">
+                Entrar na Sala
+            </button>
+
         </div>
     </div>
 
     <script>
+
+        // Função executada quando o usuário entra no chat
         function joinChat() {
-            const name = document.getElementById('usernameInput').value.trim();
+
+            // Pega o valor digitado no input e remove espaços extras
+            const name = document
+                .getElementById('usernameInput')
+                .value
+                .trim();
+
+            // Só entra se o nome não estiver vazio
             if (name !== "") {
+
+                // Gera uma cor aleatória para o usuário
                 const randomHue = Math.floor(Math.random() * 360);
+
                 const color = `hsl(${randomHue}, 80%, 70%)`;
+
+                // Salva nome e cor no sessionStorage
+                // para usar depois na tela do chat
                 sessionStorage.setItem('chat_username', name);
                 sessionStorage.setItem('chat_color', color);
+
+                // Redireciona para a página principal do chat
                 window.location.href = "/chat";
             }
         }
-        document.getElementById('joinBtn').addEventListener('click', joinChat);
-        document.getElementById('usernameInput').addEventListener('keypress', e => { if (e.key === 'Enter') joinChat(); });
+
+        // Evento de clique do botão
+        document
+            .getElementById('joinBtn')
+            .addEventListener('click', joinChat);
+
+        // Permite entrar pressionando Enter no input
+        document
+            .getElementById('usernameInput')
+            .addEventListener('keypress', e => {
+
+                if (e.key === 'Enter') {
+                    joinChat();
+                }
+            });
+
     </script>
+
 </body>
 </html>
