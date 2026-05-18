@@ -2,7 +2,7 @@
    FUNDO DA TELA
    ========================================= */
 body {
-    background-color: #0f0f13; /* Fundo escuro */
+    background-color: #0f0f13;
     color: #ffffff;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
@@ -18,7 +18,7 @@ body {
 .card-container {
     background-color: #20202a;
     width: 100%;
-    max-width: 600px; /* Largura fixa da caixinha no centro */
+    max-width: 800px; /* Um pouco mais largo para caber a lista */
     height: 80vh;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
@@ -27,9 +27,7 @@ body {
     overflow: hidden;
 }
 
-/* =========================================
-   CABEÇALHO
-   ========================================= */
+/* Cabeçalho */
 .chat-header {
     background-color: #252532;
     padding: 20px;
@@ -38,35 +36,69 @@ body {
 }
 
 .chat-header h2 {
-    margin: 0;
+    margin: 0 0 5px 0;
     font-size: 20px;
 }
 
 /* =========================================
-   ÁREA DAS MENSAGENS
+   ÁREA DO MEIO (DIVIDIDA EM 2 COLUNAS)
    ========================================= */
-.messages-list {
-    flex: 1; /* Preenche o espaço do meio */
+.chat-body-container {
+    display: flex;
+    flex: 1; /* Preenche todo o meio da caixa */
+    overflow: hidden;
+}
+
+/* Coluna 1: Chat (Esquerda) */
+.messages-column {
+    flex: 3;
     padding: 20px;
     margin: 0;
     overflow-y: auto;
     list-style: none;
+    border-right: 1px solid #333; /* Linha que divide o chat da lista */
 }
 
-.messages-list li {
+.messages-column li {
     margin-bottom: 10px;
     font-size: 15px;
     line-height: 1.4;
 }
 
-.user-name {
-    font-weight: bold;
-    margin-right: 5px;
+.user-name { font-weight: bold; margin-right: 5px; }
+.user-msg { color: #e0e0e0; word-break: break-word; }
+
+/* Coluna 2: Lista de Usuários (Direita) */
+.users-column {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background-color: #1e1e26; /* Um fundo levemente diferente para destacar */
 }
 
-.user-msg {
-    color: #e0e0e0;
-    word-break: break-word;
+.users-list-title {
+    color: #a0a0b0;
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 14px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+}
+
+.online-users-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    color: #fff;
+    font-size: 14px;
+}
+
+.online-users-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #2a2a34;
+    display: flex;
+    align-items: center;
 }
 
 /* =========================================
@@ -90,10 +122,7 @@ body {
     font-size: 14px;
 }
 
-.input-area input:focus {
-    outline: none;
-    border-color: #5555ff;
-}
+.input-area input:focus { outline: none; border-color: #5555ff; }
 
 .input-area button {
     padding: 10px 18px;
@@ -105,10 +134,5 @@ body {
     transition: filter 0.2s;
 }
 
-.input-area button:hover {
-    filter: brightness(1.2);
-}
-
-#sendBtn {
-    background-color: #5555ff; /* Azul pro botão de enviar */
-}
+.input-area button:hover { filter: brightness(1.2); }
+#sendBtn { background-color: #5555ff; }
