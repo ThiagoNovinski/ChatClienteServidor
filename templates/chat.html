@@ -1,66 +1,27 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-
-<head>
-    <meta charset="UTF-8">
-
-    <!-- Título da aba -->
-    <title>Sala Global</title>
-
-    <!-- Arquivo de estilos -->
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-
-<body>
-
-    <!-- Container principal do chat -->
-    <div class="card-container">
-
-        <!-- Cabeçalho -->
+<div class="card-container">
         <div class="chat-header">
-
-            <!-- Área onde serão exibidas as infos da conexão -->
             <div id="headerContent">
                 <h2>Conectando...</h2>
             </div>
-
+        </div>
+        
+        <div style="display: flex; height: 350px; border-bottom: 1px solid #333;">
+            
+            <ul id="messages" class="messages-list" style="flex: 3; border-right: 1px solid #333; margin: 0; padding: 15px; height: 100%; overflow-y: auto;"></ul>
+            
+            <div style="flex: 1; background-color: #1a1a24; padding: 10px; overflow-y: auto;">
+                <h4 style="color: #a0a0b0; margin-top: 0; text-align: center; border-bottom: 1px solid #444; padding-bottom: 5px;">Usuários Online</h4>
+                <ul id="onlineUsersList" style="list-style: none; padding: 0; margin: 0; color: #fff; font-size: 14px;">
+                    </ul>
+            </div>
+            
         </div>
 
-        <!-- Lista onde as mensagens serão adicionadas -->
-        <ul id="messages" class="messages-list"></ul>
-
-        <!-- Área inferior de envio -->
         <div class="input-area">
-
-            <!-- Campo de digitação -->
-            <input 
-                type="text"
-                id="myMessage"
-                placeholder="Digite sua mensagem..."
-                autocomplete="off"
-            >
-
-            <!-- Botão de enviar -->
-            <button id="sendBtn">
-                Enviar
-            </button>
-
-            <!-- Botão para sair da sala -->
-            <button 
-                id="leaveBtn"
-                style="background-color: #6c757d; margin-left: 10px;"
-            >
-                Sair
-            </button>
-
-            <!-- Botão que simula a queda do servidor -->
-            <button 
-                id="crashBtn"
-                style="background-color: #ff3333; margin-left: 10px;"
-            >
-                Derrubar
-            </button>
-
+            <input type="text" id="myMessage" placeholder="Digite sua mensagem..." autocomplete="off">
+            <button id="sendBtn">Enviar</button>
+            <button id="leaveBtn" style="background-color: #6c757d; margin-left: 10px;">Sair</button>
+            <button id="crashBtn" style="background-color: #ff3333; margin-left: 10px;">Derrubar</button>
         </div>
     </div>
 
@@ -171,6 +132,17 @@
                         socket.close();
                     }
                 }
+                // Lendo a lista de usuários online
+                else if (data.tipo === "lista_usuarios") {
+                    const onlineUl = document.getElementById('onlineUsersList');
+                    onlineUl.innerHTML = ''; // Limpa a lista velha
+                    
+                    data.usuarios.forEach(usuario => {
+                        const li = document.createElement('li');
+                        li.textContent = "🟢 " + usuario; // Bolinha verde é o deboche total
+                        li.style.padding = "5px 0";
+                        onlineUl.appendChild(li);
+                    });
             };
 
             // Evento executado quando a conexão cai

@@ -46,8 +46,6 @@ def mensagem_recebida(cliente, servidor, mensagem):
         # Quando o usuário entra na sala
         if dados.get("tipo") == "join":
             nome = dados.get("user", "Desconhecido")
-
-            # Guarda o nome associado ao ID do cliente
             usuarios_conectados[cliente['id']] = nome
             
             msg_entrou = {
@@ -59,6 +57,8 @@ def mensagem_recebida(cliente, servidor, mensagem):
 
             # Notifica todos os clientes conectados
             servidor.send_message_to_all(json.dumps(msg_entrou))
+            # Função dos usuários online
+            atualizar_lista_usuarios(servidor)
             return
 
         # Simula a queda da réplica
@@ -107,6 +107,8 @@ def client_desconectou(cliente, servidor):
 
         # Informa aos demais usuários que ele saiu
         servidor.send_message_to_all(json.dumps(msg_saiu))
+        # Função dos usuários online
+        atualizar_lista_usuarios(servidor)
 
 def desligar_servidor():
     global servidor_atual
@@ -151,6 +153,16 @@ def rodar_servidor_websocket():
     servidor_atual.run_forever()
 
     print(f"[-] Réplica TID {tid_atual} morta e desalocada.")
+
+def atualizar_lista_usuarios(servidor):
+    # Pega apenas os nomes do dicionário e transforma em uma lista
+    nomes_online = list(usuarios_conectados.values())
+    
+    msg = {
+        "tipo": "lista_usuarios",
+        "usuarios": nomes_online
+    }
+    servidor.send_message_to_all(json.dumps(msg))
 
 # ==========================================
 # 2. WATCHER - TOLERÂNCIA A FALHAS
