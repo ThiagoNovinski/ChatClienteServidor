@@ -275,3 +275,55 @@ mas esse hover ainda será aplicado */
 #crashBtn:hover {
     filter: brightness(0.85);
 }
+
+/* Novo container flex para a área principal do chat */
+.chat-body-container {
+    display: flex;
+    flex-direction: row;
+    height: 400px; /* Altura fixa confortável para o chat */
+    border-bottom: 1px solid #333;
+    overflow: hidden; /* Garante que nada escape */
+}
+
+/* Coluna das mensagens (lado esquerdo) */
+.messages-column {
+    flex: 3; /* Ocupa 75% da largura */
+    border-right: 1px solid #333;
+    margin: 0;
+    padding: 15px;
+    height: 100%;
+    overflow-y: auto; /* Scroll individual apenas para as mensagens */
+    list-style: none; /* Garante que os lis não tenham bolinhas padrão */
+}
+
+/* Coluna dos usuários online (lado direito) */
+.users-column {
+    flex: 1; /* Ocupa 25% da largura */
+    background-color: #1a1a24; /* Um tom ligeiramente diferente */
+    padding: 10px;
+    height: 100%;
+    overflow-y: auto; /* Scroll individual se houver muitos usuários */
+}
+
+.users-list-title {
+    color: #a0a0b0;
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 14px;
+    border-bottom: 1px solid #444;
+    padding-bottom: 5px;
+}
+
+.online-users-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    color: #fff;
+    font-size: 14px;
+}
+
+.online-users-list li {
+    padding: 6px 0;
+    border-bottom: 1px solid #2a2a34; /* Linha sutil de separação */
+}
