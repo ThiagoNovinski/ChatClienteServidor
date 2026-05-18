@@ -2,13 +2,24 @@
    FUNDO DA TELA
    ========================================= */
 body {
+
+    /* Cor de fundo principal */
     background-color: #0f0f13;
+
+    /* Cor padrão dos textos */
     color: #ffffff;
+
+    /* Fonte geral da aplicação */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    /* Centraliza o conteúdo no meio da tela */
     display: flex;
     justify-content: center;
     align-items: center;
+
     height: 100vh;
+
+    /* Remove margens padrão do navegador */
     margin: 0;
 }
 
@@ -16,193 +27,359 @@ body {
    CAIXA PRINCIPAL DO CHAT
    ========================================= */
 .card-container {
+
     background-color: #20202a;
+
     width: 100%;
-    max-width: 800px; /* Um pouco mais largo para caber a lista */
+
+    /* Limita largura máxima */
+    max-width: 800px;
+
+    /* Altura proporcional à tela */
     height: 80vh;
+
+    /* Bordas arredondadas */
     border-radius: 12px;
+
+    /* Sombra externa */
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+
+    /* Organiza os elementos em coluna */
     display: flex;
     flex-direction: column;
+
     overflow: hidden;
 }
 
-/* Cabeçalho */
+/* =========================================
+   CABEÇALHO
+   ========================================= */
 .chat-header {
+
     background-color: #252532;
+
     padding: 20px;
+
     text-align: center;
+
     border-bottom: 1px solid #333;
 }
 
 .chat-header h2 {
+
     margin: 0 0 5px 0;
+
     font-size: 20px;
 }
 
 /* =========================================
-   ÁREA DO MEIO (DIVIDIDA EM 2 COLUNAS)
+   ÁREA CENTRAL DO CHAT
    ========================================= */
 .chat-body-container {
+
+    /* Divide o espaço em duas colunas */
     display: flex;
-    flex: 1; /* Preenche todo o meio da caixa */
+
+    /* Faz ocupar todo o espaço disponível */
+    flex: 1;
+
     overflow: hidden;
 }
 
-/* Coluna 1: Chat (Esquerda) */
+/* =========================================
+   COLUNA DAS MENSAGENS
+   ========================================= */
 .messages-column {
+
+    /* Ocupa mais espaço que a lista lateral */
     flex: 3;
+
     padding: 20px;
+
     margin: 0;
+
     overflow-y: auto;
+
     list-style: none;
-    border-right: 1px solid #333; /* Linha que divide o chat da lista */
+
+    /* Linha divisória entre chat e usuários */
+    border-right: 1px solid #333;
 }
 
+/* Cada mensagem do chat */
 .messages-column li {
+
     margin-bottom: 10px;
+
     font-size: 15px;
+
     line-height: 1.4;
 }
 
-.user-name { font-weight: bold; margin-right: 5px; }
-.user-msg { color: #e0e0e0; word-break: break-word; }
+/* Nome do usuário */
+.user-name {
 
-/* Coluna 2: Lista de Usuários (Direita) */
-.users-column {
-    flex: 1;
-    padding: 15px;
-    overflow-y: auto;
-    background-color: #1e1e26; /* Um fundo levemente diferente para destacar */
+    font-weight: bold;
+
+    margin-right: 5px;
 }
 
+/* Texto da mensagem */
+.user-msg {
+
+    color: #e0e0e0;
+
+    /* Evita quebra estranha de palavras */
+    word-break: break-word;
+}
+
+/* =========================================
+   LISTA DE USUÁRIOS ONLINE
+   ========================================= */
+.users-column {
+
+    /* Ocupa menos espaço lateral */
+    flex: 1;
+
+    padding: 15px;
+
+    overflow-y: auto;
+
+    /* Fundo levemente diferente */
+    background-color: #1e1e26;
+}
+
+/* Título da lista */
 .users-list-title {
+
     color: #a0a0b0;
+
     margin-top: 0;
     margin-bottom: 15px;
+
     text-align: center;
+
     font-size: 14px;
+
     border-bottom: 1px solid #333;
+
     padding-bottom: 10px;
 }
 
+/* Lista de usuários */
 .online-users-list {
+
     list-style: none;
+
     padding: 0;
     margin: 0;
+
     color: #fff;
+
     font-size: 14px;
 }
 
+/* Cada usuário online */
 .online-users-list li {
+
     padding: 8px 0;
+
     border-bottom: 1px solid #2a2a34;
+
     display: flex;
+
     align-items: center;
 }
 
 /* =========================================
-   RODAPÉ (INPUT E BOTÕES)
+   ÁREA DE INPUT E BOTÕES
    ========================================= */
 .input-area {
+
     display: flex;
+
     padding: 15px;
+
     background-color: #252532;
+
     border-top: 1px solid #333;
+
+    /* Espaço entre elementos */
     gap: 10px;
 }
 
+/* Campo de texto */
 .input-area input {
+
+    /* Faz o input ocupar o espaço restante */
     flex: 1;
+
     padding: 12px;
+
     border-radius: 8px;
+
     border: 1px solid #444;
+
     background-color: #1a1a24;
+
     color: #fff;
+
     font-size: 14px;
 }
 
-.input-area input:focus { outline: none; border-color: #5555ff; }
+/* Destaque ao clicar no input */
+.input-area input:focus {
 
-.input-area button {
-    padding: 10px 18px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    color: white;
-    font-weight: bold;
-    transition: filter 0.2s;
-}
-
-.input-area button:hover { filter: brightness(1.2); }
-#sendBtn { background-color: #5555ff; }
-
-/* =========================================
-   TELA DE LOGIN (index.html)
-   ========================================= */
-.login-card {
-    background-color: #20202a;
-    width: 100%;
-    max-width: 400px; /* Caixinha menor e mais elegante, sem esticar */
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.login-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.login-header h2 {
-    margin: 0 0 10px 0;
-    font-size: 24px;
-    color: #ffffff;
-}
-
-.login-header p {
-    margin: 0;
-    color: #a0a0b0;
-    font-size: 14px;
-}
-
-.login-form {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 15px;
-}
-
-.login-form input {
-    padding: 15px;
-    border-radius: 8px;
-    border: 1px solid #444;
-    background-color: #1a1a24;
-    color: #fff;
-    font-size: 16px;
-    text-align: center; /* Centraliza o nome digitado */
-}
-
-.login-form input:focus {
     outline: none;
+
     border-color: #5555ff;
 }
 
-.login-form button {
-    padding: 15px;
+/* Estilo geral dos botões */
+.input-area button {
+
+    padding: 10px 18px;
+
     border: none;
+
     border-radius: 8px;
+
     cursor: pointer;
-    background-color: #5555ff;
+
     color: white;
+
     font-weight: bold;
-    font-size: 16px;
+
     transition: filter 0.2s;
 }
 
+/* Efeito visual ao passar o mouse */
+.input-area button:hover {
+
+    filter: brightness(1.2);
+}
+
+/* Cor específica do botão enviar */
+#sendBtn {
+
+    background-color: #5555ff;
+}
+
+/* =========================================
+   TELA DE LOGIN
+   ========================================= */
+.login-card {
+
+    background-color: #20202a;
+
+    width: 100%;
+
+    /* Limita largura da caixa */
+    max-width: 400px;
+
+    padding: 40px;
+
+    border-radius: 12px;
+
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+}
+
+/* Cabeçalho do login */
+.login-header {
+
+    text-align: center;
+
+    margin-bottom: 30px;
+}
+
+/* Título */
+.login-header h2 {
+
+    margin: 0 0 10px 0;
+
+    font-size: 24px;
+
+    color: #ffffff;
+}
+
+/* Texto abaixo do título */
+.login-header p {
+
+    margin: 0;
+
+    color: #a0a0b0;
+
+    font-size: 14px;
+}
+
+/* Formulário do login */
+.login-form {
+
+    display: flex;
+
+    flex-direction: column;
+
+    width: 100%;
+
+    gap: 15px;
+}
+
+/* Campo de nome */
+.login-form input {
+
+    padding: 15px;
+
+    border-radius: 8px;
+
+    border: 1px solid #444;
+
+    background-color: #1a1a24;
+
+    color: #fff;
+
+    font-size: 16px;
+
+    /* Centraliza o texto digitado */
+    text-align: center;
+}
+
+/* Destaque ao focar */
+.login-form input:focus {
+
+    outline: none;
+
+    border-color: #5555ff;
+}
+
+/* Botão do login */
+.login-form button {
+
+    padding: 15px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    background-color: #5555ff;
+
+    color: white;
+
+    font-weight: bold;
+
+    font-size: 16px;
+
+    transition: filter 0.2s;
+}
+
+/* Hover do botão */
 .login-form button:hover {
+
     filter: brightness(1.2);
 }

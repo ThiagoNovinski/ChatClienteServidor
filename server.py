@@ -1,188 +1,381 @@
-# Não esqueça dos imports no topo!
+# ==========================================
+# IMPORTS
+# ==========================================
+
+# Manipulação de variáveis de ambiente
 import os
+
+# Criação e gerenciamento de threads
 import threading
+
+# Conversão de dados para JSON
 import json
+
+# Utilizado no delay do watcher
 import time
+
+# Biblioteca do servidor websocket
 from websocket_server import WebsocketServer
 
-# Variáveis globais
+
+# ==========================================
+# VARIÁVEIS GLOBAIS
+# ==========================================
+
+# Guarda a instância atual do servidor
 servidor_atual = None
+
+# Armazena o TID da thread do servidor
 tid_atual = None
+
+# Dicionário de usuários online
+# Estrutura:
+# { id_cliente : nome_usuario }
 usuarios_conectados = {}
 
+
 # ==========================================
-# 1. LÓGICA DO SERVIDOR DE CHAT (REPLICA)
+# 1. LÓGICA DO SERVIDOR DE CHAT
 # ==========================================
 
-# NOVIDADE: Função para disparar a lista atualizada para todos
 def atualizar_lista_usuarios(servidor):
-    # PROTEÇÃO EXTR@: Não tenta mandar lista para servidor nulo
-    if servidor is None: return
-    
-    # Pega apenas os nomes do dicionário e transforma em uma lista
+
+    # Evita tentar enviar mensagens
+    # para um servidor inválido
+    if servidor is None:
+        return
+
+    # Extrai apenas os nomes dos usuários online
     nomes_online = list(usuarios_conectados.values())
-    
+
+    # Mensagem contendo a lista atualizada
     msg = {
         "tipo": "lista_usuarios",
         "usuarios": nomes_online
     }
+
+    # Envia a lista para todos os clientes
     servidor.send_message_to_all(json.dumps(msg))
 
 
+# ==========================================
+# NOVA CONEXÃO
+# ==========================================
 def client_conectou(cliente, servidor):
-    # PROTEÇÃO CRÍTICA DO RENDER: Ignora os pings de checagem de saúde
+
+    # Alguns health checks do Render
+    # geram conexões inválidas
     if cliente is None:
         return
-        
+
+    # TID da thread responsável pelo cliente
     tid_cliente = threading.get_native_id()
-    print(f"[Thread {tid_cliente}] Cliente {cliente['id']} conectado na Réplica TID {tid_atual}")
-    
-    # Envia os TIDs de prova de concorrência
+
+    print(
+        f"[Thread {tid_cliente}] "
+        f"Cliente {cliente['id']} "
+        f"conectado na Réplica TID {tid_atual}"
+    )
+
+    # Envia informações das threads
+    # para demonstrar concorrência
     info_thread = {
         "tipo": "sistema",
         "tid_servidor": tid_atual,
         "tid_cliente": tid_cliente
     }
-    servidor.send_message(cliente, json.dumps(info_thread))
 
-    # Mensagem de boas-vindas do sistema
+    servidor.send_message(
+        cliente,
+        json.dumps(info_thread)
+    )
+
+    # Mensagem inicial do sistema
     msg_init = {
         "tipo": "chat",
         "user": "SISTEMA",
         "color": "#ffaa00",
-        "text": f"Inicializando servidor de TID: {tid_atual}"
+        "text": (
+            f"Inicializando servidor "
+            f"de TID: {tid_atual}"
+        )
     }
-    servidor.send_message(cliente, json.dumps(msg_init))
+
+    servidor.send_message(
+        cliente,
+        json.dumps(msg_init)
+    )
 
 
+# ==========================================
+# RECEBIMENTO DE MENSAGENS
+# ==========================================
 def mensagem_recebida(cliente, servidor, mensagem):
-    # PROTEÇÃO CRÍTICA DO RENDER
-    if cliente is None or servidor is None: return
+
+    # Proteção contra conexões inválidas
+    if cliente is None or servidor is None:
+        return
 
     try:
+
+        # Converte a mensagem JSON
+        # recebida para dicionário
         dados = json.loads(mensagem)
 
-        # 1. Apresentação do usuário (Login)
+        # ----------------------------------
+        # ENTRADA DE USUÁRIO NO CHAT
+        # ----------------------------------
         if dados.get("tipo") == "join":
-            nome = dados.get("user", "Desconhecido")
-            # Salva o nome atrelado ao ID da conexão no dicionário
-            usuarios_conectados[cliente['id']] = nome
-            
-            # Avisa todos com o nome correto
+
+            # Nome enviado pelo cliente
+            nome = dados.get(
+                "user",
+                "Desconhecido"
+            )
+
+            # Salva o usuário no dicionário
+            usuarios_conectados[
+                cliente['id']
+            ] = nome
+
+            # Mensagem avisando que entrou
             msg_entrou = {
                 "tipo": "chat",
                 "user": "SISTEMA",
                 "color": "#00cc44",
-                "text": f"{nome} entrou na sala."
+                "text": (
+                    f"{nome} entrou na sala."
+                )
             }
-            servidor.send_message_to_all(json.dumps(msg_entrou))
-            
-            # NOVIDADE: Atualiza a lista lateral para todos!
-            atualizar_lista_usuarios(servidor)
+
+            servidor.send_message_to_all(
+                json.dumps(msg_entrou)
+            )
+
+            # Atualiza a lista lateral
+            atualizar_lista_usuarios(
+                servidor
+            )
+
             return
 
-        # 2. Comando de Derrubar o Servidor (Tolerância a Falhas)
+        # ----------------------------------
+        # COMANDO DE DERRUBAR SERVIDOR
+        # ----------------------------------
         if dados.get("tipo") == "crash":
+
+            # Mensagem de aviso para todos
             aviso = {
                 "tipo": "chat",
-                "comando": "forcar_desconexao", 
+                "comando": "forcar_desconexao",
                 "user": "SISTEMA",
                 "color": "#ff0000",
-                "text": f"O servidor de TID: {tid_atual} caiu!"
+                "text": (
+                    f"O servidor de TID: "
+                    f"{tid_atual} caiu!"
+                )
             }
-            servidor.send_message_to_all(json.dumps(aviso))
-            # Inicia uma thread para desligar sem travar a recepção de mensagens
-            threading.Thread(target=desligar_servidor).start()
+
+            servidor.send_message_to_all(
+                json.dumps(aviso)
+            )
+
+            # Cria uma thread separada
+            # para desligar o servidor
+            threading.Thread(
+                target=desligar_servidor
+            ).start()
+
             return
 
-        # 3. Mensagem de texto normal
+        # ----------------------------------
+        # MENSAGEM NORMAL DO CHAT
+        # ----------------------------------
+
+        # Marca a mensagem como chat
         dados['tipo'] = 'chat'
-        servidor.send_message_to_all(json.dumps(dados))
+
+        # Repassa para todos os clientes
+        servidor.send_message_to_all(
+            json.dumps(dados)
+        )
+
     except Exception as e:
-        print(f"Erro ao processar mensagem: {e}")
+
+        print(
+            f"Erro ao processar mensagem: {e}"
+        )
 
 
+# ==========================================
+# DESCONEXÃO DE CLIENTE
+# ==========================================
 def client_desconectou(cliente, servidor):
-    # PROTEÇÃO CRÍTICA DO RENDER
+
+    # Ignora desconexões inválidas
     if cliente is None:
         return
-        
+
     tid = threading.get_native_id()
-    print(f"[Thread {tid}] Cliente {cliente['id']} desconectou.")
-    
-    # Verifica se a conexão que caiu tinha um nome registrado (Ignora desconexões fantasmas)
+
+    print(
+        f"[Thread {tid}] "
+        f"Cliente {cliente['id']} desconectou."
+    )
+
+    # Verifica se o cliente tinha nome registrado
     if cliente['id'] in usuarios_conectados:
-        nome = usuarios_conectados.pop(cliente['id']) # Pega o nome e remove do dicionário
-        
+
+        # Remove do dicionário
+        nome = usuarios_conectados.pop(
+            cliente['id']
+        )
+
+        # Mensagem de saída
         msg_saiu = {
             "tipo": "chat",
             "user": "SISTEMA",
             "color": "#cc0000",
             "text": f"{nome} saiu da sala."
         }
-        servidor.send_message_to_all(json.dumps(msg_saiu))
-        
-        # NOVIDADE: Atualiza a lista para todos que ficaram!
-        atualizar_lista_usuarios(servidor)
+
+        servidor.send_message_to_all(
+            json.dumps(msg_saiu)
+        )
+
+        # Atualiza lista de usuários online
+        atualizar_lista_usuarios(
+            servidor
+        )
 
 
+# ==========================================
+# DESLIGAMENTO DO SERVIDOR
+# ==========================================
 def desligar_servidor():
+
     global servidor_atual
-    print(f"[!] DERRUBANDO A RÉPLICA DE TID {tid_atual}...")
+
+    print(
+        f"[!] DERRUBANDO A RÉPLICA "
+        f"DE TID {tid_atual}..."
+    )
+
     if servidor_atual:
-        # Limpa o dicionário de usuários online para a próxima réplica
-        usuarios_conectados.clear() 
-        # Fecha as conexões de forma segura para os clientes tentarem reconectar
-        for cliente in list(servidor_atual.clients):
+
+        # Limpa lista de usuários
+        usuarios_conectados.clear()
+
+        # Fecha todas as conexões abertas
+        for cliente in list(
+            servidor_atual.clients
+        ):
+
             try:
-                cliente['handler'].request.close()
+
+                cliente[
+                    'handler'
+                ].request.close()
+
             except:
                 pass
-        # Shutdown do servidor de forma limpa
+
+        # Finaliza o servidor corretamente
         servidor_atual.shutdown()
+
         servidor_atual.server_close()
 
 
+# ==========================================
+# INICIALIZAÇÃO DO SERVIDOR
+# ==========================================
 def rodar_servidor_websocket():
-    global servidor_atual, tid_atual
-    tid_atual = threading.get_native_id()
-    
-    # Captura a porta injetada pela nuvem do Render
-    porta_nuvem = int(os.environ.get("PORT", 9001))
-    
-    print(f"\n[+] Iniciando WebSocket na porta {porta_nuvem} (TID: {tid_atual})...")
-    
-    # Instancia o servidor usando a porta da nuvem
-    servidor_atual = WebsocketServer(host='0.0.0.0', port=porta_nuvem)
-    
-    servidor_atual.set_fn_new_client(client_conectou)
-    servidor_atual.set_fn_client_left(client_desconectou)
-    servidor_atual.set_fn_message_received(mensagem_recebida)
 
-    # O código "trava" aqui enquanto o servidor estiver rodando
+    global servidor_atual, tid_atual
+
+    # Guarda o TID da thread atual
+    tid_atual = threading.get_native_id()
+
+    # Porta fornecida pela plataforma Render
+    porta_nuvem = int(
+        os.environ.get("PORT", 9001)
+    )
+
+    print(
+        f"\n[+] Iniciando WebSocket "
+        f"na porta {porta_nuvem} "
+        f"(TID: {tid_atual})..."
+    )
+
+    # Cria o servidor websocket
+    servidor_atual = WebsocketServer(
+        host='0.0.0.0',
+        port=porta_nuvem
+    )
+
+    # Define os callbacks do servidor
+    servidor_atual.set_fn_new_client(
+        client_conectou
+    )
+
+    servidor_atual.set_fn_client_left(
+        client_desconectou
+    )
+
+    servidor_atual.set_fn_message_received(
+        mensagem_recebida
+    )
+
+    # Mantém o servidor rodando
     servidor_atual.run_forever()
-    print(f"[-] Réplica TID {tid_atual} morta e desalocada.")
+
+    print(
+        f"[-] Réplica TID "
+        f"{tid_atual} morta e desalocada."
+    )
 
 
 # ==========================================
-# 2. WATCHER - GERENCIADOR DE TOLERÂNCIA A FALHAS
+# 2. WATCHER DE TOLERÂNCIA A FALHAS
 # ==========================================
 if __name__ == '__main__':
+
+    # TID da thread principal
     tid_principal = threading.get_native_id()
-    print(f"[*] Processo Mestre de Tolerância a Falhas rodando no TID: {tid_principal}")
-    
-    # LOOP INFINITO DE REPLICAÇÃO
+
+    print(
+        f"[*] Processo Mestre "
+        f"de Tolerância a Falhas "
+        f"rodando no TID: {tid_principal}"
+    )
+
+    # Loop infinito de monitoramento
     while True:
-        # Instancia e inicia a thread do servidor de chat
-        thread_servidor = threading.Thread(target=rodar_servidor_websocket)
+
+        # Cria a thread do servidor
+        thread_servidor = threading.Thread(
+            target=rodar_servidor_websocket
+        )
+
+        # Inicia o servidor
         thread_servidor.start()
-        
-        # O Mestre fica aguardando aqui (.join()). Se a thread do servidor morrer, ele acorda e passa dessa linha
+
+        # O watcher fica aguardando
+        # até a thread morrer
         thread_servidor.join()
 
-        # O Mestre detecta a falha e entra em ação
-        print("[ALERTA] Falha detectada! O servidor de chat caiu.")
-        print("[ALERTA] Instanciando a próxima thread de réplica em 2 segundos...")
-        
-        # Pequeno delay para garantir que o SO liberou a porta de rede
+        # Se chegou aqui,
+        # o servidor caiu
+        print(
+            "[ALERTA] Falha detectada! "
+            "O servidor de chat caiu."
+        )
+
+        print(
+            "[ALERTA] Instanciando "
+            "a próxima réplica "
+            "em 2 segundos..."
+        )
+
+        # Pequeno delay antes de recriar
         time.sleep(2)

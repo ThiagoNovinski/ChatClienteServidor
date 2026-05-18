@@ -1,49 +1,117 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
+
+    <!-- Faz a página se adaptar melhor em celulares -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Título exibido na aba -->
     <title>Login - Sala Global</title>
+
+    <!-- Arquivo de estilos -->
     <link rel="stylesheet" href="/static/style.css">
 </head>
+
 <body>
+
+    <!-- Card central da tela de login -->
     <div class="login-card">
+
+        <!-- Cabeçalho -->
         <div class="login-header">
+
             <h2>Bem-vindo ao Chat</h2>
-            <p>Por favor, identifique-se para entrar na sala.</p>
+
+            <p>
+                Por favor, identifique-se para entrar na sala.
+            </p>
+
         </div>
-        
+
+        <!-- Área do formulário -->
         <div class="login-form">
-            <input type="text" id="usernameInput" placeholder="Seu nome..." autocomplete="off">
-            <button id="loginBtn">Entrar na Sala</button>
+
+            <!-- Campo onde o usuário digita o nome -->
+            <input 
+                type="text"
+                id="usernameInput"
+                placeholder="Seu nome..."
+                autocomplete="off"
+            >
+
+            <!-- Botão para entrar -->
+            <button id="loginBtn">
+                Entrar na Sala
+            </button>
+
         </div>
     </div>
 
     <script>
+
+        // Referências dos elementos da tela
         const input = document.getElementById('usernameInput');
+
         const btn = document.getElementById('loginBtn');
 
+        // --------------------------------------------------
+        // FUNÇÃO DE ENTRADA NO CHAT
+        // --------------------------------------------------
         function entrar() {
+
+            // Pega o nome digitado e remove espaços extras
             const nome = input.value.trim();
+
+            // Só continua se o campo não estiver vazio
             if (nome !== "") {
-                // Sorteia uma cor para o usuário
-                const cores = ["#ff5555", "#55ff55", "#5555ff", "#ffff55", "#ff55ff", "#55ffff", "#ffaa00"];
-                const corEscolhida = cores[Math.floor(Math.random() * cores.length)];
-                
+
+                // Lista de cores possíveis para os usuários
+                const cores = [
+                    "#ff5555",
+                    "#55ff55",
+                    "#5555ff",
+                    "#ffff55",
+                    "#ff55ff",
+                    "#55ffff",
+                    "#ffaa00"
+                ];
+
+                // Escolhe uma cor aleatória da lista
+                const corEscolhida =
+                    cores[Math.floor(Math.random() * cores.length)];
+
+                // Salva nome e cor no navegador
                 sessionStorage.setItem('chat_username', nome);
-                sessionStorage.setItem('chat_color', corEscolhida);
-                
-                // Redireciona para o chat (Ajuste para "/chat" ou "chat.html" conforme o seu Vercel exige)
-                window.location.href = "/chat"; 
+
+                sessionStorage.setItem(
+                    'chat_color',
+                    corEscolhida
+                );
+
+                // Redireciona para a página do chat
+                // Dependendo da hospedagem pode ser:
+                // "/chat" ou "chat.html"
+                window.location.href = "/chat";
             }
         }
 
+        // Evento de clique do botão
         btn.addEventListener('click', entrar);
+
+        // Permite entrar pressionando Enter
         input.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') entrar();
+
+            if (e.key === 'Enter') {
+                entrar();
+            }
         });
-        
+
+        // Já deixa o cursor ativo no input
         input.focus();
+
     </script>
+
 </body>
 </html>
