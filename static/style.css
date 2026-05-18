@@ -1,318 +1,107 @@
-/* style.css */
-
-/* ---------- RESET GERAL ---------- */
-/* Remove margens/paddings padrão e define uma fonte única */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-}
-
+/* =========================================
+   LAYOUT PRINCIPAL (PROPORÇÃO 50/30/20)
+   ========================================= */
 body {
-    /* Fundo escuro para combinar com o tema do chat */
-    background-color: #11111a;
-
-    /* Centraliza o card no meio da tela */
     display: flex;
     justify-content: center;
     align-items: center;
-
     height: 100vh;
-    color: #e4e4e7;
+    margin: 0;
+    background-color: #0f0f13; /* Cor do fundo da tela (os 20%) */
+    font-family: Arial, sans-serif;
 }
 
-/* ---------- CONTAINER PRINCIPAL ---------- */
-.card-container {
-    width: 100%;
+.app-container {
+    display: flex;
+    width: 80%; /* Garante os 20% de fundo livre (10% de cada lado) */
+    max-width: 1400px;
+    height: 85vh; /* Ocupa bem a tela na vertical */
+    gap: 25px; /* Espaço entre a caixa do chat e a caixa de usuários */
+}
 
-    /* Limita o tamanho máximo do chat */
-    max-width: 600px;
-    height: 80vh;
-    max-height: 700px;
-
-    background-color: #1f1f2e;
-
-    /* Bordas arredondadas e sombra */
-    border-radius: 12px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
-
-    /* Organiza os elementos verticalmente */
+/* =========================================
+   CAIXA DO CHAT
+   ========================================= */
+.chat-panel {
+    flex: 5; /* Proporção 5 do espaço disponível */
+    background-color: #20202a;
+    border-radius: 20px; /* Bordas bem arredondadas */
     display: flex;
     flex-direction: column;
-
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     overflow: hidden;
-
-    border: 1px solid #2a2a3f;
 }
 
-/* ---------- CABEÇALHO ---------- */
 .chat-header {
-    background-color: #26263a;
-
     padding: 20px;
-
+    background-color: #252532;
+    border-bottom: 1px solid #333;
     text-align: center;
-
-    border-bottom: 2px solid #32324e;
-
-    /* Impede que o header diminua */
-    flex-shrink: 0;
+    color: #fff;
 }
 
-.chat-header h2 {
-    font-size: 22px;
-    color: #ffffff;
-
-    letter-spacing: 0.5px;
-}
-
-/* ---------- TELA DE LOGIN ---------- */
-.login-body {
-    padding: 40px;
-
-    display: flex;
-    flex-direction: column;
-
-    justify-content: center;
-    align-items: center;
-
-    /* Faz ocupar o espaço restante do container */
-    flex-grow: 1;
-
-    text-align: center;
-}
-
-.login-body p {
-    margin-bottom: 25px;
-
-    color: #a1a1aa;
-    font-size: 16px;
-}
-
-.login-body input {
-    width: 80%;
-
-    padding: 15px;
-    margin-bottom: 20px;
-
-    border: 2px solid #32324e;
-    border-radius: 8px;
-
-    background-color: #11111a;
-
-    color: #ffffff;
-    font-size: 16px;
-
-    outline: none;
-
-    transition: border-color 0.3s;
-}
-
-/* Destaca o input quando o usuário clica nele */
-.login-body input:focus {
-    border-color: #6366f1;
-}
-
-.login-body button {
-    width: 80%;
-
-    padding: 15px;
-
-    border: none;
-    border-radius: 8px;
-
-    background-color: #6366f1;
-
-    color: white;
-
-    cursor: pointer;
-
-    font-weight: bold;
-    font-size: 16px;
-
-    letter-spacing: 1px;
-
-    transition: background-color 0.2s, transform 0.1s;
-}
-
-/* Efeito quando passa o mouse */
-.login-body button:hover {
-    background-color: #4f46e5;
-}
-
-/* Dá uma sensação de clique */
-.login-body button:active {
-    transform: scale(0.98);
-}
-
-/* ---------- LISTA DE MENSAGENS ---------- */
 .messages-list {
-    list-style-type: none;
-
+    flex: 1; /* Preenche todo o espaço vazio, colando o input no rodapé */
     padding: 20px;
-
-    /* Faz a área de mensagens crescer */
-    flex-grow: 1;
-
-    /* Adiciona scroll quando necessário */
+    margin: 0;
     overflow-y: auto;
-
-    display: flex;
-    flex-direction: column;
-
-    gap: 12px;
+    list-style: none;
 }
 
-/* Personaliza a scrollbar */
-.messages-list::-webkit-scrollbar {
-    width: 8px;
-}
-
-.messages-list::-webkit-scrollbar-track {
-    background: #1f1f2e;
-}
-
-.messages-list::-webkit-scrollbar-thumb {
-    background-color: #3f3f5a;
-    border-radius: 10px;
-}
-
-/* ---------- BALÕES DE MENSAGEM ---------- */
-.messages-list li {
-    background-color: #2a2a3f;
-
-    padding: 12px 18px;
-
-    border-radius: 10px;
-
-    /* Dá aparência de balão de conversa */
-    border-top-left-radius: 2px;
-
-    word-wrap: break-word;
-
-    font-size: 15px;
-    line-height: 1.5;
-
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-
-    align-self: flex-start;
-
-    max-width: 90%;
-}
-
-.user-name {
-    font-weight: 700;
-
-    margin-right: 8px;
-
-    font-size: 14px;
-}
-
-.user-msg {
-    color: #e4e4e7;
-}
-
-/* ---------- ÁREA DE INPUT ---------- */
 .input-area {
+    padding: 20px;
+    background-color: #252532;
+    border-top: 1px solid #333;
     display: flex;
-
-    padding: 15px 20px;
-
-    background-color: #26263a;
-
-    border-top: 1px solid #32324e;
-
-    flex-shrink: 0;
-
-    align-items: center;
+    gap: 10px;
 }
 
 .input-area input {
-    /* Faz o input ocupar o espaço disponível */
-    flex-grow: 1;
-
-    padding: 14px 20px;
-
-    border: none;
-    border-radius: 25px;
-
-    outline: none;
-
-    background-color: #11111a;
-
-    color: #ffffff;
-
+    flex: 1;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #444;
+    background-color: #1a1a24;
+    color: white;
     font-size: 15px;
 }
 
+/* Botões do Chat */
 .input-area button {
-    margin-left: 12px;
-
-    padding: 12px 20px;
-
+    padding: 12px 24px;
+    border-radius: 12px;
     border: none;
-    border-radius: 25px;
-
-    background-color: #6366f1;
-
-    color: white;
-
     cursor: pointer;
-
     font-weight: bold;
-
-    transition: all 0.2s ease;
+    color: white;
+    transition: filter 0.2s;
 }
+.input-area button:hover { filter: brightness(1.2); }
+#sendBtn { background-color: #5555ff; }
+.btn-secondary { background-color: #6c757d; }
+.btn-danger { background-color: #ff3333; }
 
-/* Efeito visual no hover */
-.input-area button:hover {
-    background-color: #4f46e5;
-}
-
-/* O botão de crash usa estilo inline no HTML,
-mas esse hover ainda será aplicado */
-#crashBtn:hover {
-    filter: brightness(0.85);
-}
-
-/* Novo container flex para a área principal do chat */
-.chat-body-container {
+/* =========================================
+   CAIXA DE USUÁRIOS ONLINE
+   ========================================= */
+.users-panel {
+    flex: 3; /* Proporção 3 do espaço disponível */
+    background-color: #1a1a24;
+    border-radius: 20px; /* Bordas bem arredondadas */
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     display: flex;
-    flex-direction: row;
-    height: 400px; /* Altura fixa confortável para o chat */
-    border-bottom: 1px solid #333;
-    overflow: hidden; /* Garante que nada escape */
-}
-
-/* Coluna das mensagens (lado esquerdo) */
-.messages-column {
-    flex: 3; /* Ocupa 75% da largura */
-    border-right: 1px solid #333;
-    margin: 0;
-    padding: 15px;
-    height: 100%;
-    overflow-y: auto; /* Scroll individual apenas para as mensagens */
-    list-style: none; /* Garante que os lis não tenham bolinhas padrão */
-}
-
-/* Coluna dos usuários online (lado direito) */
-.users-column {
-    flex: 1; /* Ocupa 25% da largura */
-    background-color: #1a1a24; /* Um tom ligeiramente diferente */
-    padding: 10px;
-    height: 100%;
-    overflow-y: auto; /* Scroll individual se houver muitos usuários */
+    flex-direction: column;
 }
 
 .users-list-title {
     color: #a0a0b0;
     margin-top: 0;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     text-align: center;
-    font-size: 14px;
+    font-size: 18px;
     border-bottom: 1px solid #444;
-    padding-bottom: 5px;
+    padding-bottom: 15px;
 }
 
 .online-users-list {
@@ -320,10 +109,17 @@ mas esse hover ainda será aplicado */
     padding: 0;
     margin: 0;
     color: #fff;
-    font-size: 14px;
+    overflow-y: auto;
 }
 
+/* Estilo de cada usuário na lista */
 .online-users-list li {
-    padding: 6px 0;
-    border-bottom: 1px solid #2a2a34; /* Linha sutil de separação */
+    padding: 12px 15px;
+    background-color: #252532;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
