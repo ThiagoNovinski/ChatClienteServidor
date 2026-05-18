@@ -136,3 +136,73 @@ body {
 
 .input-area button:hover { filter: brightness(1.2); }
 #sendBtn { background-color: #5555ff; }
+
+/* =========================================
+   TELA DE LOGIN (index.html)
+   ========================================= */
+.login-card {
+    background-color: #20202a;
+    width: 100%;
+    max-width: 400px; /* Caixinha menor e mais elegante, sem esticar */
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-header h2 {
+    margin: 0 0 10px 0;
+    font-size: 24px;
+    color: #ffffff;
+}
+
+.login-header p {
+    margin: 0;
+    color: #a0a0b0;
+    font-size: 14px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 15px;
+}
+
+.login-form input {
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background-color: #1a1a24;
+    color: #fff;
+    font-size: 16px;
+    text-align: center; /* Centraliza o nome digitado */
+}
+
+.login-form input:focus {
+    outline: none;
+    border-color: #5555ff;
+}
+
+.login-form button {
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #5555ff;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    transition: filter 0.2s;
+}
+
+.login-form button:hover {
+    filter: brightness(1.2);
+}
