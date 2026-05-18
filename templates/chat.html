@@ -125,7 +125,10 @@
         // CONEXÃO COM O SERVIDOR
         // --------------------------------------------------
         function conectarServidor() {
-
+            // Se já existe uma conexão aberta ou tentando conectar, retorna
+            if (socket && (socket.readyState === WebSocket.CONNECTING || socket.readyState === WebSocket.OPEN)) {
+                return;
+            }
             // Cria conexão websocket
             socket = new WebSocket(
                 'wss://chatclienteservidor.onrender.com'
@@ -270,8 +273,8 @@
                 sendBtn.disabled = true;
                 crashBtn.disabled = true;
 
-                // Evita múltiplos intervals simultâneos
-                clearInterval(tentativaReconexao);
+                // Ele aguarda 3 segundos e tenta reconectar apenas vez de forma limpa.
+                setTimeout(conectarServidor, 3000);
 
                 // Tenta reconectar a cada 3 segundos
                 tentativaReconexao = setInterval(
