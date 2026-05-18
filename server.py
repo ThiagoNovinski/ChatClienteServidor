@@ -1,20 +1,8 @@
-# ==========================================
-# IMPORTS
-# ==========================================
-
-# Manipulação de variáveis de ambiente
 import os
-
-# Criação e gerenciamento de threads
 import threading
-
-# Conversão de dados para JSON
 import json
-
-# Utilizado no delay do watcher
 import time
 
-# Biblioteca do servidor websocket
 from websocket_server import WebsocketServer
 
 
@@ -22,53 +10,57 @@ from websocket_server import WebsocketServer
 # VARIÁVEIS GLOBAIS
 # ==========================================
 
-# Guarda a instância atual do servidor
+# Instância atual do servidor websocket
 servidor_atual = None
 
-# Armazena o TID da thread do servidor
+# Guarda o TID da thread do servidor
 tid_atual = None
 
-# Dicionário de usuários online
+# Usuários conectados no momento
 # Estrutura:
 # { id_cliente : nome_usuario }
 usuarios_conectados = {}
 
 
 # ==========================================
-# 1. LÓGICA DO SERVIDOR DE CHAT
+# ATUALIZA LISTA DE USUÁRIOS
 # ==========================================
-
 def atualizar_lista_usuarios(servidor):
 
-    # Evita tentar enviar mensagens
-    # para um servidor inválido
+    # Evita tentar enviar dados
+    # para um servidor inexistente
     if servidor is None:
         return
 
-    # Extrai apenas os nomes dos usuários online
-    nomes_online = list(usuarios_conectados.values())
+    # Pega somente os nomes dos usuários
+    nomes_online = list(
+        usuarios_conectados.values()
+    )
 
-    # Mensagem contendo a lista atualizada
+    # Estrutura enviada para o frontend
     msg = {
         "tipo": "lista_usuarios",
         "usuarios": nomes_online
     }
 
-    # Envia a lista para todos os clientes
-    servidor.send_message_to_all(json.dumps(msg))
+    # Dispara a lista atualizada
+    # para todos os clientes
+    servidor.send_message_to_all(
+        json.dumps(msg)
+    )
 
 
 # ==========================================
-# NOVA CONEXÃO
+# CLIENTE CONECTOU
 # ==========================================
 def client_conectou(cliente, servidor):
 
     # Alguns health checks do Render
-    # geram conexões inválidas
+    # criam conexões inválidas
     if cliente is None:
         return
 
-    # TID da thread responsável pelo cliente
+    # TID da thread atual
     tid_cliente = threading.get_native_id()
 
     print(
@@ -77,14 +69,16 @@ def client_conectou(cliente, servidor):
         f"conectado na Réplica TID {tid_atual}"
     )
 
-    # Envia informações das threads
-    # para demonstrar concorrência
+    # Dados usados para demonstrar
+    # concorrência no frontend
     info_thread = {
         "tipo": "sistema",
         "tid_servidor": tid_atual,
         "tid_cliente": tid_cliente
     }
 
+    # Envia os dados apenas
+    # para o cliente recém conectado
     servidor.send_message(
         cliente,
         json.dumps(info_thread)
@@ -108,9 +102,13 @@ def client_conectou(cliente, servidor):
 
 
 # ==========================================
-# RECEBIMENTO DE MENSAGENS
+# MENSAGEM RECEBIDA
 # ==========================================
-def mensagem_recebida(cliente, servidor, mensagem):
+def mensagem_recebida(
+    cliente,
+    servidor,
+    mensagem
+):
 
     # Proteção contra conexões inválidas
     if cliente is None or servidor is None:
@@ -118,12 +116,12 @@ def mensagem_recebida(cliente, servidor, mensagem):
 
     try:
 
-        # Converte a mensagem JSON
-        # recebida para dicionário
+        # Converte JSON recebido
+        # para dicionário Python
         dados = json.loads(mensagem)
 
         # ----------------------------------
-        # ENTRADA DE USUÁRIO NO CHAT
+        # LOGIN DO USUÁRIO
         # ----------------------------------
         if dados.get("tipo") == "join":
 
@@ -133,12 +131,12 @@ def mensagem_recebida(cliente, servidor, mensagem):
                 "Desconhecido"
             )
 
-            # Salva o usuário no dicionário
+            # Associa o nome ao ID da conexão
             usuarios_conectados[
                 cliente['id']
             ] = nome
 
-            # Mensagem avisando que entrou
+            # Mensagem avisando entrada
             msg_entrou = {
                 "tipo": "chat",
                 "user": "SISTEMA",
@@ -148,11 +146,12 @@ def mensagem_recebida(cliente, servidor, mensagem):
                 )
             }
 
+            # Envia aviso para todos
             servidor.send_message_to_all(
                 json.dumps(msg_entrou)
             )
 
-            # Atualiza a lista lateral
+            # Atualiza lista lateral
             atualizar_lista_usuarios(
                 servidor
             )
@@ -160,11 +159,11 @@ def mensagem_recebida(cliente, servidor, mensagem):
             return
 
         # ----------------------------------
-        # COMANDO DE DERRUBAR SERVIDOR
+        # COMANDO DE CRASH
         # ----------------------------------
         if dados.get("tipo") == "crash":
 
-            # Mensagem de aviso para todos
+            # Mensagem de aviso
             aviso = {
                 "tipo": "chat",
                 "comando": "forcar_desconexao",
@@ -176,11 +175,12 @@ def mensagem_recebida(cliente, servidor, mensagem):
                 )
             }
 
+            # Avisa todos os clientes
             servidor.send_message_to_all(
                 json.dumps(aviso)
             )
 
-            # Cria uma thread separada
+            # Cria thread separada
             # para desligar o servidor
             threading.Thread(
                 target=desligar_servidor
@@ -192,10 +192,10 @@ def mensagem_recebida(cliente, servidor, mensagem):
         # MENSAGEM NORMAL DO CHAT
         # ----------------------------------
 
-        # Marca a mensagem como chat
+        # Define o tipo da mensagem
         dados['tipo'] = 'chat'
 
-        # Repassa para todos os clientes
+        # Reenvia para todos os clientes
         servidor.send_message_to_all(
             json.dumps(dados)
         )
@@ -208,7 +208,7 @@ def mensagem_recebida(cliente, servidor, mensagem):
 
 
 # ==========================================
-# DESCONEXÃO DE CLIENTE
+# CLIENTE DESCONECTOU
 # ==========================================
 def client_desconectou(cliente, servidor):
 
@@ -223,10 +223,11 @@ def client_desconectou(cliente, servidor):
         f"Cliente {cliente['id']} desconectou."
     )
 
-    # Verifica se o cliente tinha nome registrado
+    # Verifica se o cliente
+    # estava registrado
     if cliente['id'] in usuarios_conectados:
 
-        # Remove do dicionário
+        # Remove usuário do dicionário
         nome = usuarios_conectados.pop(
             cliente['id']
         )
@@ -236,21 +237,24 @@ def client_desconectou(cliente, servidor):
             "tipo": "chat",
             "user": "SISTEMA",
             "color": "#cc0000",
-            "text": f"{nome} saiu da sala."
+            "text": (
+                f"{nome} saiu da sala."
+            )
         }
 
+        # Avisa todos os clientes
         servidor.send_message_to_all(
             json.dumps(msg_saiu)
         )
 
-        # Atualiza lista de usuários online
+        # Atualiza lista de usuários
         atualizar_lista_usuarios(
             servidor
         )
 
 
 # ==========================================
-# DESLIGAMENTO DO SERVIDOR
+# DESLIGA O SERVIDOR
 # ==========================================
 def desligar_servidor():
 
@@ -263,10 +267,10 @@ def desligar_servidor():
 
     if servidor_atual:
 
-        # Limpa lista de usuários
+        # Limpa usuários online
         usuarios_conectados.clear()
 
-        # Fecha todas as conexões abertas
+        # Fecha todas as conexões
         for cliente in list(
             servidor_atual.clients
         ):
@@ -280,23 +284,24 @@ def desligar_servidor():
             except:
                 pass
 
-        # Finaliza o servidor corretamente
+        # Finaliza o servidor
         servidor_atual.shutdown()
 
         servidor_atual.server_close()
 
 
 # ==========================================
-# INICIALIZAÇÃO DO SERVIDOR
+# INICIA SERVIDOR WEBSOCKET
 # ==========================================
 def rodar_servidor_websocket():
 
-    global servidor_atual, tid_atual
+    global servidor_atual
+    global tid_atual
 
-    # Guarda o TID da thread atual
+    # TID da thread atual
     tid_atual = threading.get_native_id()
 
-    # Porta fornecida pela plataforma Render
+    # Porta fornecida pela Render
     porta_nuvem = int(
         os.environ.get("PORT", 9001)
     )
@@ -307,13 +312,13 @@ def rodar_servidor_websocket():
         f"(TID: {tid_atual})..."
     )
 
-    # Cria o servidor websocket
+    # Cria servidor websocket
     servidor_atual = WebsocketServer(
         host='0.0.0.0',
         port=porta_nuvem
     )
 
-    # Define os callbacks do servidor
+    # Callbacks do servidor
     servidor_atual.set_fn_new_client(
         client_conectou
     )
@@ -326,7 +331,7 @@ def rodar_servidor_websocket():
         mensagem_recebida
     )
 
-    # Mantém o servidor rodando
+    # Mantém servidor ativo
     servidor_atual.run_forever()
 
     print(
@@ -336,7 +341,7 @@ def rodar_servidor_websocket():
 
 
 # ==========================================
-# 2. WATCHER DE TOLERÂNCIA A FALHAS
+# WATCHER DE TOLERÂNCIA A FALHAS
 # ==========================================
 if __name__ == '__main__':
 
@@ -346,22 +351,23 @@ if __name__ == '__main__':
     print(
         f"[*] Processo Mestre "
         f"de Tolerância a Falhas "
-        f"rodando no TID: {tid_principal}"
+        f"rodando no TID: "
+        f"{tid_principal}"
     )
 
     # Loop infinito de monitoramento
     while True:
 
-        # Cria a thread do servidor
+        # Cria thread do servidor
         thread_servidor = threading.Thread(
             target=rodar_servidor_websocket
         )
 
-        # Inicia o servidor
+        # Inicia thread
         thread_servidor.start()
 
-        # O watcher fica aguardando
-        # até a thread morrer
+        # O watcher espera até
+        # a thread morrer
         thread_servidor.join()
 
         # Se chegou aqui,
@@ -377,5 +383,6 @@ if __name__ == '__main__':
             "em 2 segundos..."
         )
 
-        # Pequeno delay antes de recriar
+        # Pequena pausa antes
+        # de recriar o servidor
         time.sleep(2)
