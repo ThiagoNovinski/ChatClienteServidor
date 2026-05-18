@@ -1,125 +1,114 @@
 /* =========================================
-   LAYOUT PRINCIPAL (PROPORÇÃO 50/30/20)
+   FUNDO DA TELA
    ========================================= */
 body {
+    background-color: #0f0f13; /* Fundo escuro */
+    color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-color: #0f0f13; /* Cor do fundo da tela (os 20%) */
-    font-family: Arial, sans-serif;
-}
-
-.app-container {
-    display: flex;
-    width: 80%; /* Garante os 20% de fundo livre (10% de cada lado) */
-    max-width: 1400px;
-    height: 85vh; /* Ocupa bem a tela na vertical */
-    gap: 25px; /* Espaço entre a caixa do chat e a caixa de usuários */
 }
 
 /* =========================================
-   CAIXA DO CHAT
+   CAIXA PRINCIPAL DO CHAT
    ========================================= */
-.chat-panel {
-    flex: 5; /* Proporção 5 do espaço disponível */
+.card-container {
     background-color: #20202a;
-    border-radius: 20px; /* Bordas bem arredondadas */
+    width: 100%;
+    max-width: 600px; /* Largura fixa da caixinha no centro */
+    height: 80vh;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
     display: flex;
     flex-direction: column;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     overflow: hidden;
 }
 
+/* =========================================
+   CABEÇALHO
+   ========================================= */
 .chat-header {
-    padding: 20px;
     background-color: #252532;
-    border-bottom: 1px solid #333;
+    padding: 20px;
     text-align: center;
-    color: #fff;
+    border-bottom: 1px solid #333;
 }
 
+.chat-header h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+/* =========================================
+   ÁREA DAS MENSAGENS
+   ========================================= */
 .messages-list {
-    flex: 1; /* Preenche todo o espaço vazio, colando o input no rodapé */
+    flex: 1; /* Preenche o espaço do meio */
     padding: 20px;
     margin: 0;
     overflow-y: auto;
     list-style: none;
 }
 
+.messages-list li {
+    margin-bottom: 10px;
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+.user-name {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.user-msg {
+    color: #e0e0e0;
+    word-break: break-word;
+}
+
+/* =========================================
+   RODAPÉ (INPUT E BOTÕES)
+   ========================================= */
 .input-area {
-    padding: 20px;
+    display: flex;
+    padding: 15px;
     background-color: #252532;
     border-top: 1px solid #333;
-    display: flex;
     gap: 10px;
 }
 
 .input-area input {
     flex: 1;
-    padding: 15px;
-    border-radius: 12px;
+    padding: 12px;
+    border-radius: 8px;
     border: 1px solid #444;
     background-color: #1a1a24;
-    color: white;
-    font-size: 15px;
+    color: #fff;
+    font-size: 14px;
 }
 
-/* Botões do Chat */
+.input-area input:focus {
+    outline: none;
+    border-color: #5555ff;
+}
+
 .input-area button {
-    padding: 12px 24px;
-    border-radius: 12px;
+    padding: 10px 18px;
     border: none;
+    border-radius: 8px;
     cursor: pointer;
-    font-weight: bold;
     color: white;
+    font-weight: bold;
     transition: filter 0.2s;
 }
-.input-area button:hover { filter: brightness(1.2); }
-#sendBtn { background-color: #5555ff; }
-.btn-secondary { background-color: #6c757d; }
-.btn-danger { background-color: #ff3333; }
 
-/* =========================================
-   CAIXA DE USUÁRIOS ONLINE
-   ========================================= */
-.users-panel {
-    flex: 3; /* Proporção 3 do espaço disponível */
-    background-color: #1a1a24;
-    border-radius: 20px; /* Bordas bem arredondadas */
-    padding: 25px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
+.input-area button:hover {
+    filter: brightness(1.2);
 }
 
-.users-list-title {
-    color: #a0a0b0;
-    margin-top: 0;
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 18px;
-    border-bottom: 1px solid #444;
-    padding-bottom: 15px;
-}
-
-.online-users-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    color: #fff;
-    overflow-y: auto;
-}
-
-/* Estilo de cada usuário na lista */
-.online-users-list li {
-    padding: 12px 15px;
-    background-color: #252532;
-    border-radius: 12px;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    font-weight: bold;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+#sendBtn {
+    background-color: #5555ff; /* Azul pro botão de enviar */
 }
