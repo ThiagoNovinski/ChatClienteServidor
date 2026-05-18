@@ -1,23 +1,9 @@
-# ==========================================
-# IMPORTS
-# ==========================================
 
-# Manipulação de variáveis de ambiente
 import os
-
-# Criação de processos independentes
 import multiprocessing
-
-# Utilizado para capturar informações de threads
 import threading
-
-# Conversão de mensagens para JSON
 import json
-
-# Utilizado para delays no watcher
 import time
-
-# Biblioteca do servidor websocket
 from websocket_server import WebsocketServer
 
 
@@ -35,7 +21,7 @@ usuarios_conectados = {}
 
 
 # ==========================================
-# 1. LÓGICA DO SERVIDOR DE CHAT (RÉPLICA)
+# 1. LÓGICA DO SERVIDOR DE CHAT (Instância)
 # ==========================================
 
 def atualizar_lista_usuarios(servidor):
@@ -72,7 +58,7 @@ def client_conectou(cliente, servidor):
     if cliente is None:
         return
 
-    # PID do processo da réplica
+    # PID do processo da instância
     pid_atual = os.getpid()
 
     # TID da thread responsável pelo cliente
@@ -105,7 +91,7 @@ def client_conectou(cliente, servidor):
         "user": "SISTEMA",
         "color": "#ffaa00",
         "text": (
-            f"Réplica ativa operando "
+            f"Instância ativa operando "
             f"no Processo PID: {pid_atual}"
         )
     }
@@ -356,7 +342,7 @@ if __name__ == '__main__':
         print(
             f"\n[ALERTA CRÍTICO] "
             f"O Processo Filho "
-            f"de Réplica morreu!"
+            f"de Instância morreu!"
         )
 
         print(
@@ -369,10 +355,10 @@ if __name__ == '__main__':
         print(
             f"[ALERTA CRÍTICO] "
             f"Inicializando uma nova "
-            f"réplica isolada "
+            f"instância isolada "
             f"em 2 segundos..."
         )
 
         # Pequena pausa antes
-        # de reiniciar a réplica
+        # de reiniciar a instância
         time.sleep(2)
