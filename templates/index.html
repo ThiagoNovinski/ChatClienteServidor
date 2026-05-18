@@ -2,91 +2,48 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-
-    <!-- Título exibido na aba do navegador -->
-    <title>Entrar no Chat</title>
-
-    <!-- Importa o arquivo de estilos -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sala Global</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
-
 <body>
-
-    <!-- Card principal da tela de login -->
-    <div class="card-container">
-
-        <!-- Cabeçalho -->
-        <div class="chat-header">
+    <div class="login-card">
+        <div class="login-header">
             <h2>Bem-vindo ao Chat</h2>
-        </div>
-
-        <!-- Área central do login -->
-        <div class="login-body">
-
-            <!-- Texto de instrução -->
             <p>Por favor, identifique-se para entrar na sala.</p>
-
-            <!-- Campo onde o usuário digita o nome -->
-            <input 
-                type="text"
-                id="usernameInput"
-                placeholder="Seu nome..."
-                autocomplete="off"
-            >
-
-            <!-- Botão para entrar -->
-            <button id="joinBtn">
-                Entrar na Sala
-            </button>
-
+        </div>
+        
+        <div class="login-form">
+            <input type="text" id="usernameInput" placeholder="Seu nome..." autocomplete="off">
+            <button id="loginBtn">Entrar na Sala</button>
         </div>
     </div>
 
     <script>
+        const input = document.getElementById('usernameInput');
+        const btn = document.getElementById('loginBtn');
 
-        // Função executada quando o usuário entra no chat
-        function joinChat() {
-
-            // Pega o valor digitado no input e remove espaços extras
-            const name = document
-                .getElementById('usernameInput')
-                .value
-                .trim();
-
-            // Só entra se o nome não estiver vazio
-            if (name !== "") {
-
-                // Gera uma cor aleatória para o usuário
-                const randomHue = Math.floor(Math.random() * 360);
-
-                const color = `hsl(${randomHue}, 80%, 70%)`;
-
-                // Salva nome e cor no sessionStorage
-                // para usar depois na tela do chat
-                sessionStorage.setItem('chat_username', name);
-                sessionStorage.setItem('chat_color', color);
-
-                // Redireciona para a página principal do chat
-                window.location.href = "/chat";
+        function entrar() {
+            const nome = input.value.trim();
+            if (nome !== "") {
+                // Sorteia uma cor para o usuário
+                const cores = ["#ff5555", "#55ff55", "#5555ff", "#ffff55", "#ff55ff", "#55ffff", "#ffaa00"];
+                const corEscolhida = cores[Math.floor(Math.random() * cores.length)];
+                
+                sessionStorage.setItem('chat_username', nome);
+                sessionStorage.setItem('chat_color', corEscolhida);
+                
+                // Redireciona para o chat (Ajuste para "/chat" ou "chat.html" conforme o seu Vercel exige)
+                window.location.href = "/chat"; 
             }
         }
 
-        // Evento de clique do botão
-        document
-            .getElementById('joinBtn')
-            .addEventListener('click', joinChat);
-
-        // Permite entrar pressionando Enter no input
-        document
-            .getElementById('usernameInput')
-            .addEventListener('keypress', e => {
-
-                if (e.key === 'Enter') {
-                    joinChat();
-                }
-            });
-
+        btn.addEventListener('click', entrar);
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') entrar();
+        });
+        
+        input.focus();
     </script>
-
 </body>
 </html>
