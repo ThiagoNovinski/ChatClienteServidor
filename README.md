@@ -17,9 +17,33 @@ https://chat-cliente-servidor.vercel.app
 
 ## Execução Local
 
-Para executar localmente:
+### 1. Criar ambiente virtual
 
-1. Altere a conexão WebSocket no arquivo `chat.html`:
+```bash
+python -m venv venv
+```
+
+### 2. Ativar ambiente virtual
+
+#### Windows
+```bash
+venv\Scripts\activate
+```
+
+#### Linux/macOS
+```bash
+source venv/bin/activate
+```
+
+### 3. Instalar dependências
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Alterar a conexão WebSocket no arquivo `chat.html`
+
+Troque:
 
 ```javascript
 socket = new WebSocket(
@@ -27,7 +51,7 @@ socket = new WebSocket(
 );
 ```
 
-Para:
+Por:
 
 ```javascript
 socket = new WebSocket(
@@ -35,10 +59,12 @@ socket = new WebSocket(
 );
 ```
 
-2. Execute o servidor Python:
+### 5. Executar o servidor Python
 
 ```bash
 python server.py
 ```
 
-3. Abra o `index.html` localmente no navegador (ou utilize Live Server).
+### 6. Abrir o front-end
+
+Abra o `index.html` localmente no navegador (ou utilize Live Server).
